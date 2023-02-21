@@ -1,0 +1,9 @@
+h1 {
+    text-align: center;
+}
+
+.videoGrid
+{
+    display: grid;
+    grid-auto-flow: dense;
+}
