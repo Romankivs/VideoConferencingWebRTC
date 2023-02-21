@@ -1,0 +1,25 @@
+{
+  "name": "videoconferencingwebrtc",
+  "version": "1.0.0",
+  "description": "video conferencing web app",
+  "main": "index.js",
+  "scripts": {
+    "test": "npm test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Romankivs/VideoConferencingWebRTC.git"
+  },
+  "keywords": [
+    "WebRTC"
+  ],
+  "author": "Sviatoslav Romankiv",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Romankivs/VideoConferencingWebRTC/issues"
+  },
+  "homepage": "https://github.com/Romankivs/VideoConferencingWebRTC#readme",
+  "dependencies": {
+    "bootstrap": "^5.2.3"
+  }
+}
