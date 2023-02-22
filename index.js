@@ -14,9 +14,8 @@ let clientSockets = [];
 
 io.on("connection", (socket) => {
     console.log(`Client with id: ${socket.id} connected`);
+    clientSockets.push(socket);
     socket.on("ready", () => {
-
-        clientSockets.push(socket);
         clientNumberUpdated(socket.id);
     
     });
