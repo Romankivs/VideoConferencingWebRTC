@@ -117,8 +117,6 @@ function addVideoToGrid(stream, id, muted = false)
     let video = document.createElement('video');
     video.id = id;
     video.muted = muted;
-    video.height = 240;
-    video.width = 320;
     video.autoplay = true;
     video.srcObject = stream;
 
