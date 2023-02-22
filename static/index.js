@@ -46,6 +46,7 @@ io.on("ids", (ids, initiatorId) => {
     Object.keys(peerConnections).forEach((id) => {
         if (!ids.includes(id)) {
             peerConnections[id].destroy();
+            removeVideoFromGrid(id);
             delete peerConnections[id];
         }
     });
@@ -72,7 +73,7 @@ io.on("ids", (ids, initiatorId) => {
         peer.on('data', (data) => console.log(`Data: ${data} from ${id}`));
         peer.on('stream', (stream) => {
             console.log("Received stream");
-            addVideoToGrid(stream);
+            addVideoToGrid(stream, id);
         });
         peerConnections[id] = peer;
     });
@@ -89,23 +90,33 @@ io.on("signal", (fromId, toId, data) => {
     }
 });
 
-// get video/voice stream
-navigator.mediaDevices.getUserMedia({
-    video: true,
-    audio: true
-}).then(gotMedia).catch((err) => { console.log(err)})
+function getMedia()
+{
+    // get video/voice stream
+    navigator.mediaDevices.getUserMedia({
+        video: true,
+        audio: true
+    }).then(gotMedia).catch((err) => {
+        console.log(err);
+        // Try again after delay
+        setTimeout(getMedia, 1000);
+    })
+}
+
+getMedia();
 
 function gotMedia(stream)
 {
     io.emit("ready");
     mediaStream = stream;
-    addVideoToGrid(mediaStream);
+    addVideoToGrid(mediaStream, uid, true);
 }
 
-function addVideoToGrid(stream)
+function addVideoToGrid(stream, id, muted = false)
 {
     let video = document.createElement('video');
-    video.muted = false;
+    video.id = id;
+    video.muted = muted;
     video.height = 240;
     video.width = 320;
     video.autoplay = true;
@@ -113,4 +124,11 @@ function addVideoToGrid(stream)
 
     let grid = document.getElementById("videoGrid");
     grid.appendChild(video);
+}
+
+function removeVideoFromGrid(videoId)
+{
+    let grid = document.getElementById("videoGrid");
+    let video = document.getElementById(videoId);
+    grid.removeChild(video);
 }
