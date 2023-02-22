@@ -12277,6 +12277,8 @@ let connectedIds;
 
 let peerConnections = {};
 
+let mediaStream;
+
 io.on("connect", (socket) => {
     console.log(`Connected to server with id: ${io.id}`);
     uid = io.id;
@@ -12299,7 +12301,8 @@ io.on("ids", (ids, initiatorId) => {
         }
         let peer = new Peer({
             initiator: initiator,
-            config: peerConfig
+            config: peerConfig,
+            stream: mediaStream
         });
 
         peer.on('error', console.error);
@@ -12312,6 +12315,10 @@ io.on("ids", (ids, initiatorId) => {
             peer.send("DIe");
         })
         peer.on('data', (data) => console.log(`Data: ${data} from ${id}`));
+        peer.on('stream', (stream) => {
+            console.log("Received stream");
+            addVideoToGrid(stream);
+        });
         peerConnections[id] = peer;
     });
 });
@@ -12327,6 +12334,29 @@ io.on("signal", (fromId, toId, data) => {
     }
 });
 
-console.log('wow');
-console.log('wowggagaww');
+// get video/voice stream
+navigator.mediaDevices.getUserMedia({
+    video: true,
+    audio: true
+}).then(gotMedia).catch((err) => { console.log(err)})
+
+function gotMedia(stream)
+{
+    io.emit("ready");
+    mediaStream = stream;
+    addVideoToGrid(mediaStream);
+}
+
+function addVideoToGrid(stream)
+{
+    let video = document.createElement('video');
+    video.muted = false;
+    video.height = 240;
+    video.width = 320;
+    video.autoplay = true;
+    video.srcObject = stream;
+
+    let grid = document.getElementById("videoGrid");
+    grid.appendChild(video);
+}
 },{"simple-peer":51,"socket.io-client":56}]},{},[72]);
