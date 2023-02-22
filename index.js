@@ -43,8 +43,6 @@ function clientNumberUpdated(initiatorId = null) {
     console.log("Current client ids: " + clientIds + " Initiator id: " + initiatorId);
 }
 
-
-
 server.listen(port, () => {
     console.log(`Server is listening on port ${port}`)
 });
