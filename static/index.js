@@ -94,7 +94,10 @@ function getMedia()
 {
     // get video/voice stream
     navigator.mediaDevices.getUserMedia({
-        video: true,
+        video: {
+            width: { min: 1280, ideal: 1280, max: 1280 },
+            height: { min: 720, ideal: 720, max: 720 },
+        },
         audio: true
     }).then(gotMedia).catch((err) => {
         console.log(err);
@@ -116,8 +119,8 @@ function addVideoToGrid(stream, id, muted = false)
 {
     let video = document.createElement('video');
     video.id = id;
-    video.width = 500;
-    video.height = 500;
+    video.width = 640;
+    video.height = 360;
     video.muted = muted;
     video.autoplay = true;
     video.srcObject = stream;
@@ -131,4 +134,48 @@ function removeVideoFromGrid(videoId)
     let grid = document.getElementById("videoGrid");
     let video = document.getElementById(videoId);
     grid.removeChild(video);
+}
+
+let muteBtn = document.getElementById("muteBtn");
+muteBtn.addEventListener("click", () => {
+    enableMicrophone(!isMicEnabled())
+    if (!isMicEnabled())
+    {
+        muteBtn.style.background = "#A52A2A";
+    }
+    else
+    {
+        muteBtn.style.background = "#F0F8FF";
+    }
+});
+
+let disCamBtn = document.getElementById("disCamBtn");
+disCamBtn.addEventListener("click", () => {
+    enableCamera(!isCameraEnabled());
+    if (!isCameraEnabled())
+    {
+        disCamBtn.style.background = "#A52A2A";
+    }
+    else
+    {
+        disCamBtn.style.background = "#F0F8FF";
+    }
+});
+
+function isMicEnabled() {
+    return mediaStream.getAudioTracks()[0].enabled;
+}
+
+function isCameraEnabled() {
+    return mediaStream.getVideoTracks()[0].enabled;
+}
+
+function enableMicrophone(enabled)
+{
+    mediaStream.getAudioTracks()[0].enabled = enabled;
+}
+
+function enableCamera(enabled)
+{
+    mediaStream.getVideoTracks()[0].enabled = enabled;
 }
