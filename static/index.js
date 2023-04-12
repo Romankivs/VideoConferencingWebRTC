@@ -124,6 +124,7 @@ function addVideoToGrid(stream, id, muted = false)
     video.muted = muted;
     video.autoplay = true;
     video.srcObject = stream;
+    video.classList.add("video");
 
     let grid = document.getElementById("videoGrid");
     grid.appendChild(video);

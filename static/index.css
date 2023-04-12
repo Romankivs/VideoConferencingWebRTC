@@ -10,17 +10,23 @@ body {
 }
 
 button {
-    height: 50px;
-    width: 150px;
+    height: 75px;
+    width: 75px;
+    border-radius: 50%;
+    border: 1px solid red;
 }
 
 .floatingBottomRow{
-    width: 350px;
+    width: 200px;
     display: flex;
     justify-content: space-between;
     position: fixed;
     bottom: 30px;
     align-self: center;
+}
+
+.video{
+    transform: scaleX(-1);
 }
 
 .videoGrid
