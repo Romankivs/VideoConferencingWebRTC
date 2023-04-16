@@ -2,7 +2,8 @@ const socketio = require("socket.io-client");
 const Peer = require("simple-peer")
 import Head from 'next/head';
 import { useState, useEffect, useRef } from 'react';
-const io = socketio.io({autoConnect: false});
+const URL = process.env.NODE_ENV === 'production' ? undefined : 'http://localhost:8000';
+const io = socketio.io(URL, {autoConnect: false});
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMicrophone, faCamera, faComment} from '@fortawesome/free-solid-svg-icons';
 
