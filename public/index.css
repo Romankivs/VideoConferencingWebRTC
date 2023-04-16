@@ -1,4 +1,4 @@
-body {
+.main {
     min-height: 100vh;
     min-width: 100vh;
     background: #FFAFBD;  /* fallback for old browsers */
@@ -17,7 +17,7 @@ button {
 }
 
 .floatingBottomRow{
-    width: 200px;
+    width: 300px;
     display: flex;
     justify-content: space-between;
     position: fixed;
