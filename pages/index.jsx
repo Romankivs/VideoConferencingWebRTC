@@ -120,7 +120,7 @@ export default function App() {
   function addVideoToGrid(stream, id, muted = false)
   {
     console.log(`add video to grid with id: ${id}`);
-    let video = {stream: stream, id: id, isMuted: muted};
+    let video = {stream: stream, id: id, muted: muted};
     setVideos(videos => [...videos, video]);
   }
 
