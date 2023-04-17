@@ -4,8 +4,12 @@ import Head from 'next/head';
 import { useState, useEffect, useRef } from 'react';
 const URL = process.env.NODE_ENV === 'production' ? undefined : 'http://localhost:8000';
 const io = socketio.io(URL, {autoConnect: false});
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faMicrophone, faCamera, faComment} from '@fortawesome/free-solid-svg-icons';
+
+import MuteMicrophoneButton from '../components/MuteMicrophoneButton.jsx'
+import DisableCameraButton from '../components/DisableCameraButton.jsx';
+import DisableСhatButton from '../components/DisableChatButton.jsx';
+
+import VideoGrid from '../components/VideoGrid.jsx';
 
 const peerConfig = { 
     iceServers:
@@ -38,81 +42,16 @@ let peerConnections = {};
 
 let mediaStream;
 
-function Video({stream, id, muted}) {
-  const videoRef = useRef();
-
-  useEffect(() => {
-    videoRef.current.srcObject = stream;
-  }, []);
-
-  return (
-    <video ref = {videoRef} id = {id} width = {640} height = {360}
-    muted = {muted} autoPlay = {true}>
-    </video>
-  );
+function toggleMute(muted) {
+  mediaStream.getAudioTracks()[0].enabled = muted;
 }
 
-function VideoGrid({videos}) {
-  const listVideos = videos.map((video, i) =>
-    <Video key = {video.id} stream = {video.stream} id = {video.id} muted = {video.muted}></Video>
-  );  
-
-  return (<div className="videoGrid" id="videoGrid">{listVideos}</div>)
+function toggleCamera(disabled) {
+  mediaStream.getVideoTracks()[0].enabled = disabled;
 }
 
-function DisableButton({onChange, children}) {
-  const [disabled, setDisabled] = useState(false);
-
-  function toggle() {
-    setDisabled(!disabled);
-    onChange(disabled);
-  }
-
-  return (
-    <button onClick={toggle}
-    className={"actionButton"}
-    style={{backgroundColor: disabled  ? '#A52A2A' : '#F0F8FF'}}>
-      {children}
-    </button>
-  );
-}
-
-function MuteMicrophoneButton() {
-  function toggleMute(muted) {
-    mediaStream.getAudioTracks()[0].enabled = muted;
-  }
-
-  return (
-    <>
-    <DisableButton onChange={toggleMute}>
-      <FontAwesomeIcon icon={faMicrophone} size={"2x"}/>
-    </DisableButton>
-    </>
-  );
-}
-
-function DisableCameraButton() {
-  function toggleCamera(disabled) {
-    mediaStream.getVideoTracks()[0].enabled = disabled;
-  }
-
-  return (
-    <DisableButton onChange={toggleCamera}>
-          <FontAwesomeIcon icon={faCamera} size={"2x"}/>
-    </DisableButton>
-  );
-}
-
-function DisableСhatButton() {
-  function toggleChat(disabled) {
-    // TODO
-  }
-
-  return (
-    <DisableButton onChange={toggleChat}>
-          <FontAwesomeIcon icon={faComment} size={"2x"}/>
-    </DisableButton>
-  );
+function toggleChat(disabled) {
+  // TODO
 }
 
 export default function App() {
@@ -230,9 +169,9 @@ export default function App() {
     <div className='main'>
       <VideoGrid videos={videos}/>
       <div className="floatingBottomRow">
-        <MuteMicrophoneButton />
-        <DisableCameraButton />
-        <DisableСhatButton />
+        <MuteMicrophoneButton onChange={toggleMute}/>
+        <DisableCameraButton onChange={toggleCamera} />
+        <DisableСhatButton onChange={toggleChat}/>
       </div>
     </div>
   </>
