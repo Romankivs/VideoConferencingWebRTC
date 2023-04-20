@@ -14,7 +14,7 @@ nextApp.prepare().then(() => {
     
     app.get('*', (req, res) => {
         return handle(req, res)
-    })    
+    });
     
     const io = new socketio.Server(server);
     

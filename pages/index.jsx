@@ -1,12 +1,11 @@
 const socketio = require("socket.io-client");
 
+import styles from '../css_modules/Index.module.css'
+
 import Head from 'next/head';
 import { useState, useEffect } from 'react';
 
-import MuteMicrophoneButton from '../components/MuteMicrophoneButton.jsx'
-import DisableCameraButton from '../components/DisableCameraButton.jsx';
-import DisableСhatButton from '../components/DisableChatButton.jsx';
-
+import FloatingBottomRow from '../components/FloatingBottomRow.jsx';
 import VideoGrid from '../components/VideoGrid.jsx';
 
 const URL = process.env.NODE_ENV === 'production' ? undefined : 'http://localhost:8000';
@@ -261,13 +260,9 @@ export default function App() {
       <title>Video Chat</title>
       <meta name="viewport" content="width=device-width, initial-scale=1" />
     </Head>
-    <div className='main'>
+    <div className={ styles.main }>
       <VideoGrid videos={videos}/>
-      <div className="floatingBottomRow">
-        <MuteMicrophoneButton onChange={toggleMute}/>
-        <DisableCameraButton onChange={toggleCamera} />
-        <DisableСhatButton onChange={toggleChat}/>
-      </div>
+      <FloatingBottomRow toggleMute={toggleMute} toggleCamera={toggleCamera} toggleChat={toggleChat} />
     </div>
   </>
   )

@@ -6,5 +6,5 @@ config.autoAddCss = false
 import '/public/index.css'
 
 export default function MyApp({ Component, pageProps }) {
-    return <App {...pageProps} />
+    return <Component {...pageProps} />
 }

@@ -1,4 +1,5 @@
 import { useEffect, useRef } from "react";
+import styles from '../css_modules/VideoGrid.module.css'
 
 function Video({stream, id, muted}) {
     const videoRef = useRef();
@@ -8,7 +9,7 @@ function Video({stream, id, muted}) {
     }, []);
   
     return (
-      <video className="col" ref = {videoRef} id = {id}
+      <video className={styles.video + " col"} ref = {videoRef} id = {id}
       muted = {muted} autoPlay = {true}>
       </video>
     );
@@ -19,5 +20,5 @@ function Video({stream, id, muted}) {
       <Video key = {video.id} stream = {video.stream} id = {video.id} muted = {video.muted}></Video>
     );  
   
-    return (<div className="container-fluid min-vh-100" id="videoGrid"><div className="row min-vh-100 align-items-center no-gutters">{listVideos}</div></div>)
+    return (<div className="container-fluid min-vh-100 " id="videoGrid"><div className="row min-vh-100 align-items-center no-gutters">{listVideos}</div></div>)
   }
