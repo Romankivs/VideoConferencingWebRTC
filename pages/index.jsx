@@ -1,9 +1,7 @@
 const socketio = require("socket.io-client");
-const Peer = require("simple-peer")
+
 import Head from 'next/head';
 import { useState, useEffect } from 'react';
-const URL = process.env.NODE_ENV === 'production' ? undefined : 'http://localhost:8000';
-const io = socketio.io(URL, {autoConnect: false});
 
 import MuteMicrophoneButton from '../components/MuteMicrophoneButton.jsx'
 import DisableCameraButton from '../components/DisableCameraButton.jsx';
@@ -11,15 +9,15 @@ import DisableСhatButton from '../components/DisableChatButton.jsx';
 
 import VideoGrid from '../components/VideoGrid.jsx';
 
+const URL = process.env.NODE_ENV === 'production' ? undefined : 'http://localhost:8000';
+const io = socketio.io(URL, {autoConnect: false});
+
 let uid;
 let connectedIds;
 
 let peerConnections = {};
 
 let mediaStream;
-
-let isPolite = [];
-let isMakingOffer = [];
 
 function toggleMute(muted) {
   mediaStream.getAudioTracks()[0].enabled = muted;
@@ -71,9 +69,9 @@ export default function App() {
       if (data.type === "offer") {
         console.log(`Received offer from ${fromId}: ${data.description.sdp}`);
 
-        const offerCollision = isMakingOffer[fromId] || peerConnection.signalingState !== "stable";
+        const offerCollision = peerConnection.isMakingOffer || peerConnection.signalingState !== "stable";
 
-        const ignoreOffer = offerCollision && !isPolite[fromId];
+        const ignoreOffer = offerCollision && !peerConnection.isPolite;
         if (ignoreOffer) {
           console.log(`Offer from ${fromId} ignored`);
           return;
@@ -116,7 +114,7 @@ export default function App() {
 
   async function handleNegotiationNeededEvent() {
     try {
-      isMakingOffer[this.id] = true;
+      this.isMakingOffer = true;
       await this.setLocalDescription();
       io.emit("signal", uid, this.id, { type: "offer", description: this.localDescription});
       console.log(`Sending offer to ${this.id} with description: ${description}`);
@@ -125,7 +123,7 @@ export default function App() {
       console.log(`OnNegotiation error: ${err}`);
     }
     finally {
-      isMakingOffer[this.id] = false;
+      this.isMakingOffer = false;
       console.log(`Finished sending offer to ${this.id}`);
     }
   }
@@ -170,9 +168,10 @@ export default function App() {
     return peerConnection;
   }
 
-  function startPeerConnection(id) {
+  function startPeerConnection(id, isInitiator) {
     let newPeerConnection = createPeerConnection();
     newPeerConnection.id = id;
+    newPeerConnection.isPolite = isInitiator;
     peerConnections[id] = newPeerConnection;
 
     mediaStream.getTracks().forEach((track) => {
@@ -181,7 +180,6 @@ export default function App() {
 
     console.log(`Started connection with ${id}`);
   }
-
 
   useEffect(() => {
     io.on("connect", (socket) => {
@@ -199,8 +197,6 @@ export default function App() {
                 peerConnections[id].close();
                 removeVideoFromGrid(id);
                 delete peerConnections[id];
-                delete isMakingOffer[id];
-                delete isPolite[id];
             }
         });
         const initiator = initiatorId === uid;
@@ -208,31 +204,7 @@ export default function App() {
             if (id === uid || peerConnections[id]) {
                 return
             }
-            startPeerConnection(id);
-            isPolite[id] = initiator;
-            /*
-            let peer = new Peer({
-                initiator: initiator,
-                config: peerConfig,
-                stream: mediaStream
-            });
-            
-            peer.on('error', console.error);
-            peer.on('signal', (data) => {
-                console.log('Signaling data ready');
-                io.emit("signal", uid, id, data);
-            });
-            peer.on('connect', () => {
-                console.log(`Peer connection established with ${id}`);
-                peer.send("DIe");
-            })
-            peer.on('data', (data) => console.log(`Data: ${data} from ${id}`));
-            peer.on('stream', (stream) => {
-                console.log("Received stream");
-                addVideoToGrid(stream, id);
-            });
-            peerConnections[id] = peer;
-            */
+            startPeerConnection(id, initiator);
         });
     });
     
@@ -287,6 +259,7 @@ export default function App() {
     <Head>
       <meta charSet="utf-8" />
       <title>Video Chat</title>
+      <meta name="viewport" content="width=device-width, initial-scale=1" />
     </Head>
     <div className='main'>
       <VideoGrid videos={videos}/>
