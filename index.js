@@ -13,7 +13,11 @@ nextApp.prepare().then(() => {
     const server = http.createServer(app);
     
     app.get('*', (req, res) => {
-        return handle(req, res)
+        return handle(req, res);
+    });
+
+    app.post('/join-room', (req, res) => {
+        return handle(req, res);
     });
     
     const io = new socketio.Server(server);
