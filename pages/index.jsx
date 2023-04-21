@@ -9,7 +9,7 @@ import FloatingBottomRow from '../components/FloatingBottomRow.jsx';
 import VideoGrid from '../components/VideoGrid.jsx';
 
 const URL = process.env.NODE_ENV === 'production' ? undefined : 'http://localhost:8000';
-const io = socketio.io(URL, {autoConnect: false});
+const io = socketio.io(URL, { autoConnect: false });
 
 let uid;
 let connectedIds;
@@ -30,7 +30,7 @@ function toggleChat(disabled) {
   // TODO
 }
 
-export default function App() {
+export default function App({ roomId }) {
   const [videos, setVideos] = useState([]);
 
   function isVideoPresent(videosList, videoId) {
@@ -239,7 +239,7 @@ export default function App() {
     
     function gotMedia(stream)
     {
-        io.emit("ready");
+        io.emit("join-room", { room: "Roomus" });
         mediaStream = stream;
         addVideoToGrid(mediaStream, uid, true);
     }

@@ -4,10 +4,11 @@ export default function JoinRoom() {
     return (
         <div className={ styles.main }>
         <main className="form-signin w-100 m-auto text-center">
-            <form method="post">
+            <form method="POST">
                 <h1 className="h3 mb-3 fw-normal">Join Room</h1>
                 <div className="form-floating mb-4">
                 <input
+                    name="username"
                     type="username"
                     className="form-control"
                     id="username"
@@ -17,6 +18,7 @@ export default function JoinRoom() {
                 </div>
                 <div className="form-floating mb-4">
                 <input
+                    name="roomId"
                     type="roomId"
                     className="form-control"
                     id="roomId"
