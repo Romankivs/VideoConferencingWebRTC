@@ -7,6 +7,7 @@ import { useState, useEffect } from 'react';
 
 import FloatingBottomRow from '../components/FloatingBottomRow.jsx';
 import VideoGrid from '../components/VideoGrid.jsx';
+import ChatPanel from '../components/ChatPanel';
 
 const URL = process.env.NODE_ENV === 'production' ? undefined : 'http://localhost:8000';
 const io = socketio.io(URL, { autoConnect: false });
@@ -26,12 +27,14 @@ function toggleCamera(disabled) {
   mediaStream.getVideoTracks()[0].enabled = disabled;
 }
 
-function toggleChat(disabled) {
-  // TODO
-}
-
 function App({ roomId }) {
   const [videos, setVideos] = useState([]);
+
+  const [chatVisible, setChatVisible] = useState(true);
+
+  function toggleChat(disabled) {
+    setChatVisible(chatVisible => !chatVisible);
+  }  
 
   function isVideoPresent(videosList, videoId) {
     let isPresent = false;
@@ -263,6 +266,7 @@ function App({ roomId }) {
     </Head>
     <div className={ styles.main }>
       <VideoGrid videos={videos}/>
+      {chatVisible ? <ChatPanel /> : null}
       <FloatingBottomRow toggleMute={toggleMute} toggleCamera={toggleCamera} toggleChat={toggleChat} />
     </div>
   </>

@@ -1,11 +1,10 @@
 .video{
     transform: scaleX(-1);
+    max-height: 100vh;
 }
 
 .videoGrid
 {
-    min-width: 100vw;
-    min-height: 100vh;
     display: flex;
     justify-content: space-around;
     align-items: center;

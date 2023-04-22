@@ -75,7 +75,7 @@ nextApp.prepare().then(() => {
 
     app.get('/rooms/:roomId', (req, res) => {
         console.log(`Room id: ${req.params.roomId}`);
-        return nextApp.render(req, res, '/room', "/?roomId=1111");
+        return nextApp.render(req, res, '/room', {});
     });
 
     app.get('*', (req, res) => {

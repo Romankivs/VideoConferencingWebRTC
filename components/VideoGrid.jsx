@@ -20,5 +20,5 @@ function Video({stream, id, muted}) {
       <Video key = {video.id} stream = {video.stream} id = {video.id} muted = {video.muted}></Video>
     );  
   
-    return (<div className="container-fluid min-vh-100 " id="videoGrid"><div className="row min-vh-100 align-items-center no-gutters">{listVideos}</div></div>)
+    return (<div className="container-fluid" id="videoGrid"><div className="row min-vh-100 align-items-center no-gutters">{listVideos}</div></div>)
   }

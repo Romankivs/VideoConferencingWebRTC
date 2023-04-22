@@ -1,8 +1,9 @@
 .floatingBottomRow{
-    width: 300px;
+    width: 270px;
     display: flex;
     justify-content: space-between;
     position: fixed;
     bottom: 40px;
-    align-self: center;
+    left: 50%;
+    transform: translateX(-50%);
 }
