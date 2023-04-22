@@ -74,8 +74,8 @@ nextApp.prepare().then(() => {
     app.use(express.json()); 
 
     app.get('/rooms/:roomId', (req, res) => {
-        console.log(req.params.roomId);
-        return handle(req, res);
+        console.log(`Room id: ${req.params.roomId}`);
+        return nextApp.render(req, res, '/room', "/?roomId=1111");
     });
 
     app.get('*', (req, res) => {

@@ -30,7 +30,7 @@ function toggleChat(disabled) {
   // TODO
 }
 
-export default function App({ roomId }) {
+function App({ roomId }) {
   const [videos, setVideos] = useState([]);
 
   function isVideoPresent(videosList, videoId) {
@@ -236,12 +236,13 @@ export default function App({ roomId }) {
             setTimeout(getMedia, 1000);
         })
     }
-    
+
     function gotMedia(stream)
     {
-        io.emit("join-room", { room: "Roomus" });
-        mediaStream = stream;
-        addVideoToGrid(mediaStream, uid, true);
+      mediaStream = stream;
+      console.log(`Joining room with id: ${roomId}`);
+      io.emit("join-room", { room: roomId });
+      addVideoToGrid(mediaStream, uid, true);
     }
 
     io.connect();
@@ -267,3 +268,9 @@ export default function App({ roomId }) {
   </>
   )
 }
+
+App.getInitialProps = async (ctx) => {
+  return { roomId : ctx.req.params.roomId};
+}
+
+export default App;
