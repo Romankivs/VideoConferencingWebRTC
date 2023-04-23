@@ -1,6 +1,9 @@
 .main {
-    width: 100vw;
+    width: 300px;
     height: 100vh;
     display: flex;
     align-items: center;
+    left: 50%;
+    transform: translateX(-50%);
+    position: fixed;
 }

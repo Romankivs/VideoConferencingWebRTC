@@ -30,11 +30,18 @@ function toggleCamera(disabled) {
 function App({ roomId }) {
   const [videos, setVideos] = useState([]);
 
+  const [messages, setMessages] = useState([]);
+
   const [chatVisible, setChatVisible] = useState(true);
 
   function toggleChat(disabled) {
     setChatVisible(chatVisible => !chatVisible);
-  }  
+  }
+
+  function addMessageToChat(username, time, text) {
+    let message = { username: username, time: time, text: text };
+    setMessages(messages => [...messages, message]);
+  }
 
   function isVideoPresent(videosList, videoId) {
     let isPresent = false;
@@ -135,6 +142,49 @@ function App({ roomId }) {
     console.log(`OnNewIceCandidate for connection with id ${this.id}`);
   }
 
+  function handleSendDataChannelOpened() {
+    console.log(`Send channel opened with id: ${this.ownerId}`);
+  }
+
+  function handleSendDataChannelClosed() {
+    console.log(`Send channel closed with id: ${this.ownerId}`);
+  }
+
+  function handleReceiveDataChannelOpened() {
+    console.log(`Receive channel opened with id: ${this.ownerId}`);
+  }
+
+  function handleReceiveDataChannelClosed() {
+    console.log(`Receive channel closed with id: ${this.ownerId}`);
+  }
+
+  function getCurrentTime() {
+    return new Date().toLocaleTimeString('en-US', { hour12: false, 
+      hour: "numeric", 
+      minute: "numeric"});
+  }
+
+  function handleReceivedMessage(event) {
+    console.log(`Received message from connection ${this.ownerId} with text: ${event.data}`);
+    addMessageToChat(this.ownerId, getCurrentTime(), event.data);
+  }
+
+  function sendMessage(msg) {
+    Object.keys(peerConnections).forEach(id => {
+      peerConnections[id].sendChannel.send(msg);
+    })
+    addMessageToChat("You", getCurrentTime(), msg);
+  }
+
+  function handleDataChannel(event) {
+    let receiveChannel = event.channel;
+    receiveChannel.onopen = handleReceiveDataChannelOpened;
+    receiveChannel.onclose = handleReceiveDataChannelClosed;
+    receiveChannel.onmessage = handleReceivedMessage;
+    receiveChannel.ownerId = this.id;
+    this.receiveChannel = receiveChannel;
+  };
+
   function createPeerConnection() {
     const peerConfig = { 
       iceServers:
@@ -161,6 +211,13 @@ function App({ roomId }) {
     };
 
     let peerConnection = new RTCPeerConnection(peerConfig);
+
+    let sendChannel = peerConnection.createDataChannel("sendChannel");
+    sendChannel.onopen = handleSendDataChannelOpened;
+    sendChannel.onclose = handleSendDataChannelClosed;
+    peerConnection.sendChannel = sendChannel;
+    peerConnection.ondatachannel = handleDataChannel;
+
     peerConnection.onicecandidate = handleIceCanditateEvent;
     peerConnection.ontrack = handleAddTrackEvent;
     peerConnection.onnegotiationneeded = handleNegotiationNeededEvent;
@@ -173,6 +230,7 @@ function App({ roomId }) {
   function startPeerConnection(id, isInitiator) {
     let newPeerConnection = createPeerConnection();
     newPeerConnection.id = id;
+    newPeerConnection.sendChannel.ownerId = id;
     newPeerConnection.isPolite = isInitiator;
     peerConnections[id] = newPeerConnection;
 
@@ -266,7 +324,7 @@ function App({ roomId }) {
     </Head>
     <div className={ styles.main }>
       <VideoGrid videos={videos}/>
-      {chatVisible ? <ChatPanel /> : null}
+      {chatVisible ? <ChatPanel messages={messages} sendMessageCallback={sendMessage}/> : null}
       <FloatingBottomRow toggleMute={toggleMute} toggleCamera={toggleCamera} toggleChat={toggleChat} />
     </div>
   </>
