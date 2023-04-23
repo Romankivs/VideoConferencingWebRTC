@@ -6,12 +6,14 @@ function InputMessageTextEditor({ sendMessageCallback }) {
 
     function sendMsg() {
         console.log(`Send button clicked with text: ${text}`);
-        sendMessageCallback(text);
-        setText("");
+        if (text !== "") {
+            sendMessageCallback(text);
+            setText("");
+        }
     }
 
     return (
-        <div className="input-group px-3 py-5">
+        <div className="input-group px-3 py-5 border-top">
             <input
                 value={text}
                 onChange={e => setText(e.target.value)}
@@ -30,14 +32,12 @@ function InputMessageTextEditor({ sendMessageCallback }) {
 
 function ChatMessage({ username, time, message }) {
     return (
-    <div className="list-group-item py-3 lh-sm">
-        <div className="d-flex w-100 align-items-center justify-content-between">
-          <strong className="mb-1">{ username }</strong>
-          <small>{ time }</small>
+        <div class="list-group-item py-3 lh-sm">
+        <div class="d-flex w-100 align-items-center justify-content-between">
+          <strong class="mb-1">{username}</strong>
+          <small>{time}</small>
         </div>
-        <div className="col-10 mb-1 small">
-          { message }
-        </div>
+        <div class="col-10 mb-1 small " style={{whiteSpace: 'pre-wrap', overflowWrap: 'break-word'}}>{message}</div>
       </div>
     );
 }
@@ -48,12 +48,12 @@ export default function ChatPanel({ messages, sendMessageCallback}) {
     );  
 
     return (
-        <div className="d-flex flex-column bg-white">
-        <div className={ styles.chatPanel + " d-flex flex-column align-items-stretch flex-shrink-0 flex-grow-1 bg-white" }>
-            <div className="d-flex align-items-center flex-shrink-0 p-3 link-dark text-decoration-none border-bottom">
+        <div className="d-flex flex-column bg-white border-start border-primary" style={{ maxHeight: "100vh" }}>
+        <div className="d-flex flex-column align-items-stretch flex-shrink-0 flex-grow-1 bg-white"  style={{ width: 380, maxHeight: "85vh"}}>
+            <div className="d-flex align-items-center flex-shrink-0 p-3 link-dark text-decoration-none border-bottom min-vh-15">
                 <span className="fs-5 fw-semibold">Room chat</span>
             </div>
-            <div className="list-group list-group-flush border-bottom scrollarea  overflow-auto ">
+            <div className="list-group list-group-flush border-bottom scrollarea overflow-auto">
                 { listMessages }
             </div>
         </div>
