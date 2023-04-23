@@ -9,9 +9,9 @@ function Video({stream, id, muted}) {
     }, []);
   
     return (
-      <video className={styles.video + " col"} ref = {videoRef} id = {id}
-      muted = {muted} autoPlay = {true}>
-      </video>
+        <video className={styles.video + " col"} ref = {videoRef} id = {id}
+        muted = {muted} autoPlay = {true}>
+        </video>
     );
   }
   

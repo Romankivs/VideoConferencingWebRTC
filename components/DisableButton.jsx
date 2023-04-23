@@ -9,10 +9,10 @@ export default function DisableButton({onChange, children}) {
       onChange(disabled);
     }
   
+    const add = disabled ? " bg-danger" : " bg-light"
     return (
       <button onClick={toggle}
-      className={styles.disableButton}
-      style={{backgroundColor: disabled  ? '#A52A2A' : '#F0F8FF'}}>
+      className={styles.disableButton + " border-primary" + add}>
         {children}
       </button>
     );
