@@ -48,8 +48,8 @@ export default function ChatPanel({ messages, sendMessageCallback}) {
     );  
 
     return (
-        <div className="d-flex flex-column bg-white border-start border-primary" style={{ maxHeight: "100vh" }}>
-        <div className="d-flex flex-column align-items-stretch flex-shrink-0 flex-grow-1 bg-white"  style={{ width: 380, maxHeight: "85vh"}}>
+        <div className="d-flex flex-column bg-white border-start border-primary w-20 flex-shrink-1" style={{ minWidth: "100px", maxHeight: "100vh" }}>
+        <div className="d-flex flex-column align-items-stretch flex-shrink-0 flex-grow-1 bg-white"  style={{ maxHeight: "80vh"}}>
             <div className="d-flex align-items-center flex-shrink-0 p-3 link-dark text-decoration-none border-bottom min-vh-15">
                 <span className="fs-5 fw-semibold">Room chat</span>
             </div>

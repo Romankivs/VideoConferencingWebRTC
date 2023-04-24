@@ -9,9 +9,11 @@ function Video({stream, id, muted}) {
     }, []);
   
     return (
-        <video className={styles.video + " col"} ref = {videoRef} id = {id}
+      <div className="col m-5 border border-primary bg-secondary rounded">
+        <video className={styles.video} ref = {videoRef} id = {id}
         muted = {muted} autoPlay = {true}>
         </video>
+      </div>
     );
   }
   
@@ -20,5 +22,5 @@ function Video({stream, id, muted}) {
       <Video key = {video.id} stream = {video.stream} id = {video.id} muted = {video.muted}></Video>
     );  
   
-    return (<div className="container-fluid" id="videoGrid"><div className="row min-vh-100 align-items-center no-gutters">{listVideos}</div></div>)
+    return (<div className="container-fluid" id="videoGrid"><div className="row h-100">{listVideos}</div></div>)
   }
