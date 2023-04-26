@@ -107,6 +107,9 @@ nextApp.prepare().then(() => {
     });
 
     app.post('/join-room', (req, res) => {
+        if (!req.body.username || !req.body.roomId)
+            return res.redirect('/join-room');
+            
         console.log(req.body.username);
         console.log(req.body.roomId);
         req.res.cookie('username', req.body.username, {
