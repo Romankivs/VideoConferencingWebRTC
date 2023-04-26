@@ -15,12 +15,12 @@ function Video({stream, id, muted}) {
         </video>
       </div>
     );
-  }
-  
-  export default function VideoGrid({videos}) {
-    const listVideos = videos.map((video, i) =>
-      <Video key = {video.id} stream = {video.stream} id = {video.id} muted = {video.muted}></Video>
-    );  
-  
-    return (<div className="container-fluid  p-5" id="videoGrid"><div className="row h-100">{listVideos}</div></div>)
-  }
+}
+
+export default function VideoGrid({videos}) {
+  const listVideos = videos.map((video, i) =>
+    <Video key = {video.id} stream = {video.stream} id = {video.id} muted = {video.muted}></Video>
+  );  
+
+  return (<div className="container-fluid  p-5" id="videoGrid"><div className="row h-100">{listVideos}</div></div>)
+}

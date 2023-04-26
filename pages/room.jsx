@@ -53,10 +53,10 @@ function App({ username, roomId }) {
     return isPresent;
   }
 
-  function addVideoToGrid(stream, id, muted = false)
+  function addVideoToGrid(stream, id, username, muted = false)
   {
     console.log(`add video to grid with id: ${id}`);
-    let video = {stream: stream, id: id, muted: muted};
+    let video = {stream: stream, id: id, username: username, muted: muted};
     setVideos(videos => {
       if (isVideoPresent(videos, id))
       {
@@ -118,7 +118,7 @@ function App({ username, roomId }) {
 
   function handleAddTrackEvent(event) {
     console.log(`Received track from ${this.id}`);
-    addVideoToGrid(event.streams[0], this.id, false);
+    addVideoToGrid(event.streams[0], this.id, this.username, false);
   }
 
   async function handleNegotiationNeededEvent() {
@@ -227,11 +227,12 @@ function App({ username, roomId }) {
     return peerConnection;
   }
 
-  function startPeerConnection(id, isInitiator) {
+  function startPeerConnection(id, username, isInitiator) {
     let newPeerConnection = createPeerConnection();
     newPeerConnection.id = id;
     newPeerConnection.sendChannel.ownerId = id;
     newPeerConnection.isPolite = isInitiator;
+    newPeerConnection.username = username;
     peerConnections[id] = newPeerConnection;
 
     mediaStream.getTracks().forEach((track) => {
@@ -248,23 +249,22 @@ function App({ username, roomId }) {
         getMedia();
     });
     
-    io.on("ids", (ids, initiatorId) => {
-        connectedIds = ids;
-        console.log(`Received ids: ${connectedIds} with initiator ${initiatorId}`);
+    io.on("ids", (users, initiatorId) => {
+        console.log(`Received users: ${JSON.stringify(users)} with initiator ${initiatorId}`);
         // cleanup peer connections not in peer ids
         Object.keys(peerConnections).forEach((id) => {
-            if (!ids.includes(id)) {
+            if (!users.some(user => user.id === id)) {
                 peerConnections[id].close();
                 removeVideoFromGrid(id);
                 delete peerConnections[id];
             }
         });
         const initiator = initiatorId === uid;
-        ids.forEach((id) => {
-            if (id === uid || peerConnections[id]) {
+        users.forEach((user) => {
+            if (user.id === uid || peerConnections[user.id]) {
                 return
             }
-            startPeerConnection(id, initiator);
+            startPeerConnection(user.id, user.username, initiator);
         });
     });
     
@@ -302,8 +302,8 @@ function App({ username, roomId }) {
     {
       mediaStream = stream;
       console.log(`Joining room with id: ${roomId}`);
-      io.emit("join-room", { room: roomId });
-      addVideoToGrid(mediaStream, uid, true);
+      io.emit("join-room", { room: roomId, username: username });
+      addVideoToGrid(mediaStream, uid, username, true);
     }
 
     io.connect();

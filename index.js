@@ -17,6 +17,8 @@ nextApp.prepare().then(() => {
     const io = new socketio.Server(server);
     
     let clientSockets = [];
+
+    let socketUsernames = {};
     
     io.use(function(socket, next){
         console.log(socket.handshake.auth.token)
@@ -28,12 +30,15 @@ nextApp.prepare().then(() => {
         clientSockets.push(socket);
 
         socket.on("join-room", (msg) => {
+            console.log(`${msg.username} joined the room with id: ${msg.room}`);
+            socketUsernames[socket.id] = msg.username;
             socket.join(msg.room);
         });
     
         socket.on("disconnect", () => {
             console.log(`Client with id: ${socket.id} disconnected`);
             clientSockets.splice(clientSockets.indexOf(socket), 1);
+            delete socketUsernames[socket.id];
         });
     
         socket.on("signal", (fromId, toId, data) => {
@@ -66,10 +71,13 @@ nextApp.prepare().then(() => {
         console.log(io.of('/').adapter.rooms);
 
         const socketsInRoom = io.of('/').adapter.rooms.get(roomId);
-        const socketsInRoomArray = Array.from(socketsInRoom);
-        io.to(roomId).emit("ids", socketsInRoomArray, initiatorId);
+        let roomParticipantsInfo = [];
+        socketsInRoom.forEach(socketId => {
+            roomParticipantsInfo.push({ id: socketId, username: socketUsernames[socketId] });
+        });
+        io.to(roomId).emit("ids", roomParticipantsInfo, initiatorId);
     
-        console.log(`Current client ids: ${socketsInRoomArray} Initiator id: ${initiatorId} for room: ${roomId}`);
+        console.log(`Current client ids: ${JSON.stringify(roomParticipantsInfo)} Initiator id: ${initiatorId} for room: ${roomId}`);
     }
     
     app.use(express.urlencoded({ extended: true }));
