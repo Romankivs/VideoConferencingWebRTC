@@ -93,7 +93,12 @@ nextApp.prepare().then(() => {
         console.log(`Room id: ${req.params.roomId}`);
         console.log('Cookies: ', req.signedCookies);
         if (!req.signedCookies['username'])
+        {
+            res.cookie('roomId', req.params.roomId, {
+                maxAge: 900000, httpOnly: true, signed: true, secret: cookieSecret
+            })
             return res.redirect('/join-room');
+        }
         return nextApp.render(req, res, '/room', {});
     });
 

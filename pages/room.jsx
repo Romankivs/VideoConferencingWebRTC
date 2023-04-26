@@ -332,6 +332,7 @@ function App({ username, roomId }) {
 }
 
 App.getInitialProps = async (ctx) => {
+  ctx.res.clearCookie('username');
   return { username: ctx.req.signedCookies['username'], roomId : ctx.req.params.roomId};
 }
 

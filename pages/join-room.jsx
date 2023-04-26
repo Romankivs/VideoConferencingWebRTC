@@ -1,6 +1,6 @@
 import styles from '../css_modules/JoinRoom.module.css'
 
-export default function JoinRoom() {
+function JoinRoom( { roomId }) {
     return (
         <div className={ styles.main }>
         <main className="form-signin w-100 m-auto text-center">
@@ -23,6 +23,7 @@ export default function JoinRoom() {
                     className="form-control"
                     id="roomId"
                     placeholder=""
+                    value = {roomId}
                 />
                 <label htmlFor="roomId">Room Id</label>
                 </div>
@@ -34,3 +35,10 @@ export default function JoinRoom() {
         </div>
     );
 }
+
+JoinRoom.getInitialProps = async (ctx) => {
+    ctx.res.clearCookie('roomId');
+    return { roomId: ctx.req.signedCookies['roomId']};
+}
+
+export default JoinRoom;
