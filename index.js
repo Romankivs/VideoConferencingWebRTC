@@ -1,4 +1,5 @@
 const express = require("express");
+var cookieParser = require('cookie-parser')
 const http = require("http");
 const socketio = require("socket.io")
 const next = require('next')
@@ -9,6 +10,7 @@ const handle = nextApp.getRequestHandler()
 
 nextApp.prepare().then(() => {
     const app = express();
+    
     const port = process.env.PORT || 8000;
     const server = http.createServer(app);
     
@@ -72,9 +74,18 @@ nextApp.prepare().then(() => {
     
     app.use(express.urlencoded({ extended: true }));
     app.use(express.json()); 
+    const cookieSecret = "M0AFZDGeMZk9NaMjTOve";
+    app.use(cookieParser(cookieSecret));
+
+    app.get('', (req, res) => {
+        return res.redirect('/join-room');
+    })
 
     app.get('/rooms/:roomId', (req, res) => {
         console.log(`Room id: ${req.params.roomId}`);
+        console.log('Cookies: ', req.signedCookies);
+        if (!req.signedCookies['username'])
+            return res.redirect('/join-room');
         return nextApp.render(req, res, '/room', {});
     });
 
@@ -85,6 +96,9 @@ nextApp.prepare().then(() => {
     app.post('/join-room', (req, res) => {
         console.log(req.body.username);
         console.log(req.body.roomId);
+        req.res.cookie('username', req.body.username, {
+            maxAge: 900000, httpOnly: true, signed: true, secret: cookieSecret
+        });
         res.redirect('/rooms/' + req.body.roomId);
     });
 

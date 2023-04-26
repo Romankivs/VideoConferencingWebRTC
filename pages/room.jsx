@@ -27,7 +27,7 @@ function toggleCamera(disabled) {
   mediaStream.getVideoTracks()[0].enabled = disabled;
 }
 
-function App({ roomId }) {
+function App({ username, roomId }) {
   const [videos, setVideos] = useState([]);
 
   const [messages, setMessages] = useState([]);
@@ -38,8 +38,8 @@ function App({ roomId }) {
     setChatVisible(chatVisible => !chatVisible);
   }
 
-  function addMessageToChat(username, time, text) {
-    let message = { username: username, time: time, text: text };
+  function addMessageToChat(username, time, text, fromYourself = false) {
+    let message = { username: username, time: time, text: text, fromYourself: fromYourself };
     setMessages(messages => [...messages, message]);
   }
 
@@ -173,7 +173,7 @@ function App({ roomId }) {
     Object.keys(peerConnections).forEach(id => {
       peerConnections[id].sendChannel.send(msg);
     })
-    addMessageToChat("You", getCurrentTime(), msg);
+    addMessageToChat(username, getCurrentTime(), msg, true);
   }
 
   function handleDataChannel(event) {
@@ -332,7 +332,7 @@ function App({ roomId }) {
 }
 
 App.getInitialProps = async (ctx) => {
-  return { roomId : ctx.req.params.roomId};
+  return { username: ctx.req.signedCookies['username'], roomId : ctx.req.params.roomId};
 }
 
 export default App;

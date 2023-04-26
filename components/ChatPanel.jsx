@@ -30,11 +30,12 @@ function InputMessageTextEditor({ sendMessageCallback }) {
     );
 }
 
-function ChatMessage({ username, time, message }) {
+function ChatMessage({ username, time, message, fromYourself }) {
+    const usernameColour = fromYourself ? "text-primary" : "";
     return (
         <div class="list-group-item py-3 lh-sm">
         <div class="d-flex w-100 align-items-center justify-content-between">
-          <strong class="mb-1">{username}</strong>
+          <strong class={usernameColour + " mb-1"}>{username}</strong>
           <small>{time}</small>
         </div>
         <div class="col-10 mb-1 small " style={{whiteSpace: 'pre-wrap', overflowWrap: 'break-word'}}>{message}</div>
@@ -44,7 +45,7 @@ function ChatMessage({ username, time, message }) {
 
 export default function ChatPanel({ messages, sendMessageCallback}) {
     const listMessages = messages.map((msg, i) =>
-      <ChatMessage key = {i} username = { msg.username } time = { msg.time } message = { msg.text }/>
+      <ChatMessage key = {i} username = { msg.username } time = { msg.time } message = { msg.text } fromYourself={ msg.fromYourself }/>
     );  
 
     return (
