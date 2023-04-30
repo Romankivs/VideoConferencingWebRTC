@@ -58,7 +58,7 @@ function App({ username, roomId }) {
     console.log(`add video to grid with id: ${id}`);
     let video = {stream: stream, id: id, username: username, muted: muted};
     setVideos(videos => {
-      if (isVideoPresent(videos, id))
+      if (false)
       {
         return videos;
       }
@@ -293,7 +293,8 @@ function App({ username, roomId }) {
       mediaStream = stream;
       console.log(`Joining room with id: ${roomId}`);
       io.emit("join-room", { room: roomId, username: username });
-      addVideoToGrid(mediaStream, uid, username, true);
+      for (let i = 0; i < 3; i++)
+        addVideoToGrid(mediaStream, uid, username, true);
     }
 
     io.connect();

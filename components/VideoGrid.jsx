@@ -1,15 +1,15 @@
 import { useEffect, useRef } from "react";
 import styles from '../css_modules/VideoGrid.module.css'
 
-function Video({stream, id, username, muted}) {
+function Video({stream, id, username, muted, gridRow, gridColumn}) {
     const videoRef = useRef();
   
     useEffect(() => {
       videoRef.current.srcObject = stream;
     }, []);
-  
+
     return (
-      <div className={styles.videoMask + " col m-2 border border-primary bg-secondary rounded"}>
+      <div className={styles.videoMask + " m-2 border border-primary bg-secondary rounded"} style={{gridRow: gridRow, gridColumn: gridColumn}}>
         <video className={styles.video} ref = {videoRef} id = {id}
         muted = {muted} autoPlay = {true}>
         </video>
@@ -25,5 +25,9 @@ export default function VideoGrid({videos}) {
     <Video key = {video.id} stream = {video.stream} id = {video.id} username = {video.username} muted = {video.muted}></Video>
   );  
 
-  return (<div className="container-fluid  p-5" id="videoGrid"><div className="row h-100">{listVideos}</div></div>)
+  const numberOfColumns = Math.ceil(Math.sqrt(videos.length));
+  const numberOfRows = Math.ceil(videos.length / numberOfColumns);
+
+  return (<div className={styles.videoGrid + " "} style={{ gridTemplateRows: "repeat(" + numberOfRows + ", 1fr)",
+    gridTemplateColumns: "repeat(" + numberOfColumns + ", 1fr)"}}>{listVideos}</div>)
 }

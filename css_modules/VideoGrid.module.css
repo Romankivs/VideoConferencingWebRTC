@@ -23,15 +23,13 @@
     display: grid;
     height: max-content;
     align-self: center;
+    justify-self: center;
 }
 
 .videoGrid
 {
-    max-height: 100vh;
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-    align-content: center;
-    flex-wrap: wrap;
+    display: grid;
+    width: 100vw;
+    height: 100vh;
     overflow: hidden;
 }
