@@ -166,7 +166,7 @@ function App({ username, roomId }) {
 
   function handleReceivedMessage(event) {
     console.log(`Received message from connection ${this.ownerId} with text: ${event.data}`);
-    addMessageToChat(this.ownerId, getCurrentTime(), event.data);
+    addMessageToChat(peerConnections[this.ownerId].username, getCurrentTime(), event.data);
   }
 
   function sendMessage(msg) {
