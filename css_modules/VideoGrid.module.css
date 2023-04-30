@@ -21,6 +21,8 @@
 
 .videoMask {
     display: grid;
+    height: max-content;
+    align-self: center;
 }
 
 .videoGrid

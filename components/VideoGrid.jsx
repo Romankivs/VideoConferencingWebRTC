@@ -9,7 +9,7 @@ function Video({stream, id, username, muted}) {
     }, []);
   
     return (
-      <div className={styles.videoMask + " col h-100 m-2 border border-primary bg-secondary rounded"}>
+      <div className={styles.videoMask + " col m-2 border border-primary bg-secondary rounded"}>
         <video className={styles.video} ref = {videoRef} id = {id}
         muted = {muted} autoPlay = {true}>
         </video>
