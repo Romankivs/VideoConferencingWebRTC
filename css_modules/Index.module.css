@@ -8,4 +8,5 @@
     flex-direction: row;
     justify-content: stretch;
     align-items: stretch;
+    overflow: hidden;
 }
